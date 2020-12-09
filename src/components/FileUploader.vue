@@ -11,9 +11,19 @@
       :after-read="afterRead"
       :show-upload="!innerOptions.readonly"
       :deletable="!innerOptions.readonly"
-      @click-preview="onClickPreview"
       @delete="onDeleteFile"
-    />
+    >
+      <template #preview-cover="{ filename, url }">
+        <div v-if="isPdf(filename)" class="van-image van-uploader__preview-image">
+          <img
+            src="/static/icon-pdf.jpg"
+            class="van-image__img"
+            style="object-fit: cover;"
+            @click="onPreviewPdf(filename, url)"
+          />
+        </div>
+      </template>
+    </van-uploader>
     <PdfViewer v-show="showPdf" ref="pdfViewer" :title="pdfTitle" :onLoaded="onPdfLoaded" :onClose="onClosePdfViewer" />
   </div>
 </template>
@@ -144,18 +154,13 @@ export default {
       }
     },
     /**
-     * 自定义的文件预览事件（根据文件扩展名判断文件类型并调用相应的组件预览）
-     * @param {Object} fileListItem 文件列表项（fileList中的元素）
+     * 自定义预览PDF事件
+     * @param {String} filename 文件名
+     * @param {String} url PDF文件的Url
      */
-    onClickPreview(fileListItem) {
-      if (fileListItem.isPdf) {
-        this.pdfTitle = fileListItem.filename
-        this.$refs.pdfViewer.preview(fileListItem.url)
-        this.showPdf = true
-      }
-      else if (!fileListItem.isImage) {
-        Toast('暂不支持预览'+commonUtils.getFileExtension(fileListItem.filename)+'文件')
-      }
+    onPreviewPdf(filename, url) {
+      this.pdfTitle = filename
+      this.$refs.pdfViewer.preview(url)
     },
     onPdfLoaded() {
       this.showPdf = true
@@ -165,6 +170,9 @@ export default {
      */
     onClosePdfViewer() {
       this.showPdf = false
+    },
+    isPdf(filename) {
+      return commonUtils.isPdf(filename)
     }
   },
   watch: {
