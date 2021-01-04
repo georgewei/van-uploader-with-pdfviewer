@@ -66,7 +66,7 @@ export default {
 .content {
   width: 100%;
   position: absolute;
-  height: calc(100vh - 106px);
+  height: calc(100vh - 88px);
   overflow-y: auto;
   top: 44px;
   box-sizing: border-box;
@@ -86,16 +86,13 @@ export default {
   width: 100%;
 }
 .submit_btn {
-  width: calc(100% - 10px);
-  border-radius: 5px;
-  margin: 0 5px;
-  margin-top: 10px;
+  width: 100%;
 }
 .fixToBottom {
   position: fixed;
-  top: calc(100vh - 62px);
-  height: 62px;
   width: 100%;
+  height: 44px;
+  bottom: 0;
   align-items: center;
   align-content: space-between;
   background-color: rgba(206, 223, 161);

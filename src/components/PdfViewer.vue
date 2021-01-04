@@ -26,6 +26,7 @@
         <td class="toolbutton">
           <van-button @click.prevent="onNextPage">下页</van-button>
         </td>
+        <td style="width: 4px"/>
         <td class="toolbutton">
           <van-button @click.prevent="onZoomOut">缩小</van-button>
         </td>
@@ -58,8 +59,8 @@ export default {
       src: '',
       currentPage: 1,
       pageCount: 0,
-      scaleIndex: 3,
-      scaleSteps: [20, 50, 80, 100, 120, 150, 200, 300, 500],
+      scaleIndex: 0,
+      scaleSteps: [100, 120, 150, 200, 300, 500],
       touchStartPoint: {
         x: 0,
         y: 0,
@@ -110,11 +111,6 @@ export default {
     onZoomOut() {
       if (this.scaleIndex > 0) {
         this.scaleIndex--
-        if (this.scaleSteps[this.scaleIndex] <= 100) {
-          // 重置容器的位置（已经无需拖动）
-          this.$refs.pdf.$el.style.top = 0
-          this.$refs.pdf.$el.style.left = 0
-        }
       }
     },
     /**
@@ -148,17 +144,15 @@ export default {
     onTouchMove(event) {
       if (this.$refs.pdf) {
         // 计算拖动后当前位置距点击位置的偏移量
-        if (this.scaleSteps[this.scaleIndex] > 100) {
-          let offset = {
-            x: event.touches[0].clientX - this.touchStartPoint.x,
-            y: event.touches[0].clientY - this.touchStartPoint.y,
-          }
-          // 强制将容器的定位方式改为绝对定位
-          this.$refs.pdf.$el.style.position = 'absolute'
-          // 设置容器的位置（点击时容器的位置加上偏移量）
-          this.$refs.pdf.$el.style.top = this.containerPos.y + offset.y + 'px'
-          this.$refs.pdf.$el.style.left = this.containerPos.x + offset.x + 'px'
+        let offset = {
+          x: event.touches[0].clientX - this.touchStartPoint.x,
+          y: event.touches[0].clientY - this.touchStartPoint.y,
         }
+        // 强制将容器的定位方式改为绝对定位
+        this.$refs.pdf.$el.style.position = 'absolute'
+        // 设置容器的位置（点击时容器的位置加上偏移量）
+        this.$refs.pdf.$el.style.top = this.containerPos.y + offset.y + 'px'
+        this.$refs.pdf.$el.style.left = this.containerPos.x + offset.x + 'px'
       }
     },
     /**
@@ -191,48 +185,42 @@ export default {
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(206, 223, 161);
 }
 .title {
   position: fixed;
   top: 0;
-  left: 0;
   height: 44px;
   width: 100%;
-  text-align: center;
-  font-size: 16px;
-  padding: 12px 0;
-  color: #39861f;
+  background-color: rgba(206, 223, 161);
 }
 .pdfViewer {
   position: absolute;
-  top: 44px;
-  left: 0;
   width: 100%;
-  height: calc(100vh - 44px - 62px);
+  top: 44px;
+  bottom: 44px;
   background-color: white;
   align-content: center;
   text-align: center;
 }
 .fixToBottom {
   position: fixed;
-  top: calc(100vh - 62px);
-  height: 62px;
   width: 100%;
+  height: 44px;
+  bottom: 0;
   align-items: center;
   align-content: space-between;
   background-color: rgba(206, 223, 161);
 }
 .fixToBottom >>> table {
   width: 100%;
+  border: none;
+  border-spacing: 0px;
 }
 .toolbutton {
-  width: 20%;
+  width: calc(20% - 1px);
 }
 .toolbutton >>> button {
   width: 100%;
-  border-radius: 5px;
-  margin-top: 6px;
   color: white;
   background-color: #39861f;
 }
